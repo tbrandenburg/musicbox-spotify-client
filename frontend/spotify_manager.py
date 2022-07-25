@@ -174,8 +174,9 @@ def refresh_devices():
     results = sp.devices()
     DATASTORE.clearDevices()
     for _, item in enumerate(results['devices']):
-        if "Spotifypod" in item['name']:
-            print(item['name'])
+        print(" Found device: ",item['name'])
+        if "musicbox" in item['name'].lower():
+            print(" Using device: ",item['name'])
             device = UserDevice(item['id'], item['name'], item['is_active'])
             DATASTORE.setUserDevice(device)
 
