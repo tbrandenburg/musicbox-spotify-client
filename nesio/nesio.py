@@ -48,8 +48,8 @@ BTN_B  = 21 # B (GPIO18 apparently is turning 0 if screen gets black)
 BTN_X  = 19 # X
 BTN_Y  = 20 # Y
 
-BTN_UP_MAPPED = 1 # Up
-BTN_DN_MAPPED = 2 # Down
+BTN_UP_MAPPED = 2 # Down
+BTN_DN_MAPPED = 1 # Up
 BTN_LT_MAPPED = 6 # Next
 BTN_RT_MAPPED = 7 # Prev
 BTN_ER_MAPPED = 4 # Select
