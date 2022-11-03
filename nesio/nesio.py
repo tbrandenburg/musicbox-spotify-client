@@ -88,16 +88,13 @@ while True:
   for button in nes_buttons:
     nes_buttons[button].update()
     if(nes_buttons[button].event == ButtonEvent.PRESSED):
-      print(nes_buttons[button].name + " pressed!")
-
       buttonMsg = [nes_buttons[button].mappedId,0,0]
 
       with socket.socket(socket.AF_INET, socket.SOCK_DGRAM) as s:
         s.connect((UDP_IP, UDP_PORT))
         s.send(bytes(buttonMsg))
-        print(" -> Sent socket message!")
     if(nes_buttons[button].event == ButtonEvent.RELEASED):
-      print(nes_buttons[button].name + " released!")
+      pass
   time.sleep(100/1000)
 
 GPIO.cleanup() # cleanup all GPIO 
