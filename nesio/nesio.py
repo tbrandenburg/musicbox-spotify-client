@@ -13,13 +13,15 @@ class RpiButton:
     state: int
     name: str
     id: int
+    mappedId: int
     event: ButtonEvent
     
-    def __init__(self,name,id):
+    def __init__(self,name,id,mappedId):
       self.name  = name
       self.id    = id
       self.event = ButtonEvent.UNDEFINED
       self.state = int(GPIO.input(id))
+      self.mappedId = mappedId
       
     def update(self):
       curState = int(GPIO.input(self.id))
@@ -46,6 +48,16 @@ BTN_B  = 21 # B (GPIO18 apparently is turning 0 if screen gets black)
 BTN_X  = 19 # X
 BTN_Y  = 20 # Y
 
+BTN_UP_MAPPED = 1 # Up
+BTN_DN_MAPPED = 2 # Down
+BTN_LT_MAPPED = 6 # Next
+BTN_RT_MAPPED = 7 # Prev
+BTN_ER_MAPPED = 4 # Select
+BTN_A_MAPPED  = 8 # Escape
+BTN_B_MAPPED  = 3 # Play
+BTN_X_MAPPED  = 0 # Nothing
+BTN_Y_MAPPED  = 5 # Back
+
 GPIO.setmode(GPIO.BCM)
 GPIO.setwarnings(True)
 
@@ -62,30 +74,30 @@ GPIO.setup(BTN_Y,  GPIO.IN)
 
 nes_buttons = dict()
 
-nes_buttons['BTN_UP'] = RpiButton('BTN_UP',BTN_UP)
-nes_buttons['BTN_DN'] = RpiButton('BTN_DN',BTN_DN)
-nes_buttons['BTN_LT'] = RpiButton('BTN_LT',BTN_LT)
-nes_buttons['BTN_RT'] = RpiButton('BTN_RT',BTN_RT)
-nes_buttons['BTN_ER'] = RpiButton('BTN_ER',BTN_ER)
-nes_buttons['BTN_A']  = RpiButton('BTN_A',BTN_A)
-nes_buttons['BTN_B']  = RpiButton('BTN_B',BTN_B)
-nes_buttons['BTN_X']  = RpiButton('BTN_X',BTN_X)
-nes_buttons['BTN_Y']  = RpiButton('BTN_Y',BTN_Y)
+nes_buttons['BTN_UP'] = RpiButton('BTN_UP',BTN_UP,BTN_UP_MAPPED)
+nes_buttons['BTN_DN'] = RpiButton('BTN_DN',BTN_DN,BTN_DN_MAPPED)
+nes_buttons['BTN_LT'] = RpiButton('BTN_LT',BTN_LT,BTN_LT_MAPPED)
+nes_buttons['BTN_RT'] = RpiButton('BTN_RT',BTN_RT,BTN_RT_MAPPED)
+nes_buttons['BTN_ER'] = RpiButton('BTN_ER',BTN_ER,BTN_ER_MAPPED)
+nes_buttons['BTN_A']  = RpiButton('BTN_A',BTN_A,BTN_A_MAPPED)
+nes_buttons['BTN_B']  = RpiButton('BTN_B',BTN_B,BTN_B_MAPPED)
+nes_buttons['BTN_X']  = RpiButton('BTN_X',BTN_X,BTN_X_MAPPED)
+nes_buttons['BTN_Y']  = RpiButton('BTN_Y',BTN_Y,BTN_Y_MAPPED)
 
 while True:
   for button in nes_buttons:
     nes_buttons[button].update()
     if(nes_buttons[button].event == ButtonEvent.PRESSED):
       print(nes_buttons[button].name + " pressed!")
+
+      buttonMsg = [nes_buttons[button].mappedId,0,0]
+
+      with socket.socket(socket.AF_INET, socket.SOCK_DGRAM) as s:
+        s.connect((UDP_IP, UDP_PORT))
+        s.send(bytes(buttonMsg))
+        print(" -> Sent socket message!")
     if(nes_buttons[button].event == ButtonEvent.RELEASED):
       print(nes_buttons[button].name + " released!")
   time.sleep(100/1000)
-
-  buttonMsg = [0,0,0]
-
-  with socket.socket(socket.AF_INET, socket.SOCK_DGRAM) as s:
-      s.connect((UDP_IP, UDP_PORT))
-      s.send(bytes(buttonMsg))
-      print("Send socket message!")
 
 GPIO.cleanup() # cleanup all GPIO 
