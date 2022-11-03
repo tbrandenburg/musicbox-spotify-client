@@ -1,3 +1,5 @@
+# pcio.py for testing button socket for spotifypod
+
 import getch
 import socket
 import struct

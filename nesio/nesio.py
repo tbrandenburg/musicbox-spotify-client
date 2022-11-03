@@ -1,3 +1,5 @@
+# nesio.py for receiving GPIO button events and transmitting them to spotifypod button socket
+
 import RPi.GPIO as GPIO
 import time
 import socket
