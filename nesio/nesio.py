@@ -50,13 +50,13 @@ BTN_Y  = 20 # Y
 
 BTN_UP_MAPPED = 2 # Down
 BTN_DN_MAPPED = 1 # Up
-BTN_LT_MAPPED = 6 # Next
-BTN_RT_MAPPED = 7 # Prev
+BTN_LT_MAPPED = 5 # Back
+BTN_RT_MAPPED = 0 # Nothing
 BTN_ER_MAPPED = 4 # Select
-BTN_A_MAPPED  = 8 # Escape
-BTN_B_MAPPED  = 3 # Play
-BTN_X_MAPPED  = 0 # Nothing
-BTN_Y_MAPPED  = 5 # Back
+BTN_A_MAPPED  = 3 # Play
+BTN_B_MAPPED  = 8 # Escape
+BTN_X_MAPPED  = 6 # Next
+BTN_Y_MAPPED  = 7 # Prev
 
 GPIO.setmode(GPIO.BCM)
 GPIO.setwarnings(True)
