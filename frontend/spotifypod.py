@@ -35,24 +35,6 @@ PREV_KEY_CODE = 2818092 if platform == "darwin" else 0
 NEXT_KEY_CODE = 3080238 if platform == "darwin" else 0
 PLAY_KEY_CODE = 3211296 if platform == "darwin" else 0
 
-SCREEN_TIMEOUT_SECONDS = 60
-
-wheel_position = -1
-last_button = -1
-
-last_interaction = time.time()
-screen_on = True
-
-def screen_sleep():
-    global screen_on
-    screen_on = False
-    os.system('xset -display :0 dpms force off')
-
-def screen_wake():
-    global screen_on
-    screen_on = True
-    os.system('xset -display :0 dpms force on')
-
 def flattenAlpha(img):
     global SCALE
     [img_w, img_h] = img.size
@@ -391,6 +373,8 @@ class StartPage(tk.Frame):
         arrow.image = arrowImg
 
 def processInput(app, input):
+    print("Received: " + str(input[0]) + "," +  + str(input[1]))
+    return
     global wheel_position, last_button, last_interaction
     position = input[2]
     button = input[0]
@@ -544,38 +528,19 @@ def onDownPressed():
     global page, app
     page.nav_down()
     render(app, page.render())
+
+def app_main_loop(app):
+    print("app_main_loop()")
+    app.after(1000, app_main_loop, app)
    
-# Driver Code 
+print("Initialize tkinter app...")
 page = RootPage(None)
 app = tkinterApp() 
 render(app, page.render())
 app.overrideredirect(True)
 app.overrideredirect(False)
-sock = socket.socket(socket.AF_INET, # Internet
-                     socket.SOCK_DGRAM) # UDP
-sock.bind((UDP_IP, UDP_PORT))
-sock.setblocking(0)
-socket_list = [sock]
-loop_count = 0
-
-def app_main_loop():
-    global app, page, loop_count, last_interaction, screen_on
-    try:
-        read_sockets = select(socket_list, [], [], 0)[0]
-        for socket in read_sockets:
-            data = socket.recv(128)
-            processInput(app, data)
-        loop_count += 1
-        if (loop_count >= 300):
-            if (time.time() - last_interaction > SCREEN_TIMEOUT_SECONDS and screen_on):
-                screen_sleep()
-            render(app, page.render())
-            loop_count = 0
-    except:
-        pass
-    finally:
-        app.after(2, app_main_loop)
 
 app.bind('<KeyPress>', onKeyPress)
-app.after(5, app_main_loop)
+app.after(0, app_main_loop, app)
+print("Opening GUI...")
 app.mainloop()

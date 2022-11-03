@@ -1,5 +1,6 @@
 import RPi.GPIO as GPIO
 import time
+import socket
 from enum import Enum
 
 class ButtonEvent(Enum):
@@ -80,10 +81,11 @@ while True:
       print(nes_buttons[button].name + " released!")
   time.sleep(100/1000)
 
-#buttonMsg = [0,0,0]
+  buttonMsg = [0,0,0]
 
-#with socket.socket(socket.AF_INET, socket.SOCK_DGRAM) as s:
-#    s.connect((HOST, PORT))
-#    s.sendall(bytes(buttonMsg))
+  with socket.socket(socket.AF_INET, socket.SOCK_DGRAM) as s:
+      s.connect((UDP_IP, UDP_PORT))
+      s.send(bytes(buttonMsg))
+      print("Send socket message!")
 
 GPIO.cleanup() # cleanup all GPIO 

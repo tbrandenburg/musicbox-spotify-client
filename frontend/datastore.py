@@ -142,7 +142,6 @@ class Datastore():
         return pickle.loads(pickled_pl)
 
     def setUserDevice(self, device):
-        print("device:"+ str(device.id))
         self.r.set("device:"+ str(device.id), pickle.dumps(device))
 
     def getSavedDevice(self, id):
