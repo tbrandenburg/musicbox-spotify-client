@@ -6,6 +6,7 @@ import tkinter as tk
 import socket
 import json
 import time
+import threading
 from datetime import timedelta
 from select import select
 from tkinter import ttk
@@ -13,7 +14,6 @@ from view_model import *
 from PIL import ImageTk, Image
 from sys import platform
 import os
-   
   
 LARGEFONT =("ChicagoFLF", 90) 
 MED_FONT =("ChicagoFLF", 70) 
@@ -34,24 +34,16 @@ RIGHT_KEY_CODE = 8189699 if platform == "darwin" else 114
 PREV_KEY_CODE = 2818092 if platform == "darwin" else 0
 NEXT_KEY_CODE = 3080238 if platform == "darwin" else 0
 PLAY_KEY_CODE = 3211296 if platform == "darwin" else 0
+ESC_KEY_CODE = 9
 
-SCREEN_TIMEOUT_SECONDS = 60
-
-wheel_position = -1
-last_button = -1
-
-last_interaction = time.time()
-screen_on = True
-
-def screen_sleep():
-    global screen_on
-    screen_on = False
-    os.system('xset -display :0 dpms force off')
-
-def screen_wake():
-    global screen_on
-    screen_on = True
-    os.system('xset -display :0 dpms force on')
+BTN_UP    = 1 # Up
+BTN_DOWN  = 2 # Down
+BTN_PLAY  = 3 # Play
+BTN_SEL   = 4 # Select
+BTN_BACK  = 5 # Back
+BTN_NEXT  = 6 # Next
+BTN_PREV  = 7 # Prev
+BTN_ESC   = 8 # Esc
 
 def flattenAlpha(img):
     global SCALE
@@ -390,59 +382,24 @@ class StartPage(tk.Frame):
         arrow.configure(background=bgColor, image=arrowImg)
         arrow.image = arrowImg
 
-def processInput(app, input):
-    global wheel_position, last_button, last_interaction
-    position = input[2]
+def processInput(input):
     button = input[0]
-    button_state = input[1]
-    if button == 29 and button_state == 0:
-        wheel_position = -1
-    elif wheel_position == -1:
-        wheel_position = position
-    elif position % 2 != 0:
-        pass
-    elif wheel_position <=1 and position > 44:
-        onDownPressed()
-        wheel_position = position
-    elif wheel_position >=44 and position < 1:
+    if button == BTN_UP:
         onUpPressed()
-        wheel_position = position
-    elif abs(wheel_position - position) > 6:
-        wheel_position = -1
-    elif wheel_position > position:
+    elif button == BTN_DOWN:
         onDownPressed()
-        wheel_position = position
-    elif wheel_position < position:
-        onUpPressed()
-        wheel_position = position
-    
-    if button_state == 0:
-        last_button = -1
-    elif button == last_button:
-        pass
-    elif button == 7:
+    elif button == BTN_SEL:
         onSelectPressed()
-        last_button = button
-    elif button == 11:
-        onBackPressed()
-        last_button = button
-    elif button == 10:
+    elif button == BTN_PLAY:
         onPlayPressed()
-        last_button = button
-    elif button == 8:
+    elif button == BTN_NEXT:
         onNextPressed()
-        last_button = button
-    elif button == 9:
+    elif button == BTN_BACK:
+        onBackPressed()
+    elif button == BTN_PREV:
         onPrevPressed()
-        last_button = button
-    
-    now = time.time()
-    if (now - last_interaction > SCREEN_TIMEOUT_SECONDS):
-        print("waking")
-        screen_wake()
-    last_interaction = now
-
-    # app.frames[StartPage].set_list_item(0, "Test") 
+    elif button == BTN_ESC:
+        onEscPressed()
 
 def onKeyPress(event):
     c = event.keycode
@@ -460,6 +417,8 @@ def onKeyPress(event):
         onPrevPressed()
     elif (c == PLAY_KEY_CODE):
         onPlayPressed()
+    elif (c == ESC_KEY_CODE):
+        onEscPressed()
     else:
         print("unrecognized key: ", c)
 
@@ -544,38 +503,34 @@ def onDownPressed():
     global page, app
     page.nav_down()
     render(app, page.render())
+
+def onEscPressed():
+    app.destroy()
+
+def button_socket_listen(app,sock):
+    print("Listening to button socket...")
+    while True:
+      data, addr = sock.recvfrom(128)
+      # Process data if something was received
+      processInput(data)
+
+print("Open button socket...")
+sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+sock.bind((UDP_IP, UDP_PORT))
    
-# Driver Code 
+print("Initialize tkinter app...")
 page = RootPage(None)
-app = tkinterApp() 
-render(app, page.render())
+
+app = tkinterApp()
 app.overrideredirect(True)
 app.overrideredirect(False)
-sock = socket.socket(socket.AF_INET, # Internet
-                     socket.SOCK_DGRAM) # UDP
-sock.bind((UDP_IP, UDP_PORT))
-sock.setblocking(0)
-socket_list = [sock]
-loop_count = 0
-
-def app_main_loop():
-    global app, page, loop_count, last_interaction, screen_on
-    try:
-        read_sockets = select(socket_list, [], [], 0)[0]
-        for socket in read_sockets:
-            data = socket.recv(128)
-            processInput(app, data)
-        loop_count += 1
-        if (loop_count >= 300):
-            if (time.time() - last_interaction > SCREEN_TIMEOUT_SECONDS and screen_on):
-                screen_sleep()
-            render(app, page.render())
-            loop_count = 0
-    except:
-        pass
-    finally:
-        app.after(2, app_main_loop)
 
 app.bind('<KeyPress>', onKeyPress)
-app.after(5, app_main_loop)
+
+thread = threading.Thread(target=button_socket_listen, args=(app, sock))
+thread.daemon = True                            # Daemonize thread
+thread.start()
+
+print("Opening GUI...")
+render(app, page.render())
 app.mainloop()

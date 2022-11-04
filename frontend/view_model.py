@@ -17,7 +17,7 @@ LINE_TITLE = 2
 print("Refreshing devices...")
 spotify_manager.refresh_devices()
 print("Refreshing data...")
-spotify_manager.refresh_data()
+#spotify_manager.refresh_data()
 
 class LineItem():
     def __init__(self, title = "", line_type = LINE_NORMAL, show_arrow = False):
@@ -211,6 +211,7 @@ class NowPlayingPage():
         return self.live_render
 
 EMPTY_LINE_ITEM = LineItem()
+
 class MenuPage():
     def __init__(self, header, previous_page, has_sub_page, is_title = False):
         self.index = 0

@@ -84,34 +84,13 @@ class SearchResults():
         self.albums = albums
         self.album_track_map = album_track_map
 
-scope = "user-follow-read," \
-        "user-library-read," \
-        "user-library-modify," \
-        "user-modify-playback-state," \
-        "user-read-playback-state," \
-        "user-read-currently-playing," \
-        "app-remote-control," \
-        "playlist-read-private," \
-        "playlist-read-collaborative," \
-        "playlist-modify-public," \
-        "playlist-modify-private," \
-        "streaming"
-
-DATASTORE = datastore.Datastore()
-
-sp = spotipy.Spotify(auth_manager=SpotifyOAuth(scope=scope))
-
-
-pageSize = 50
-has_internet = False
-
 def check_internet(request):
     global has_internet
     try:
         result = request()
         has_internet = True
     except Exception as _:
-        print("no ints")
+        print("No connection!")
         result = None
         has_internet = False
     return result
@@ -174,10 +153,10 @@ def refresh_devices():
     results = sp.devices()
     DATASTORE.clearDevices()
     for _, item in enumerate(results['devices']):
-        print(" Found device: ",item['name'])
+        print(" Found device: " + item['name'])
         if "musicbox" in item['name'].lower():
-            print(" Using device: ",item['name'])
             device = UserDevice(item['id'], item['name'], item['is_active'])
+            print(" Using device: " + item['name'] + " (device:" + str(device.id) + ")")
             DATASTORE.setUserDevice(device)
 
 def parse_album(album):
@@ -470,10 +449,32 @@ def bg_loop():
         time.sleep(sleep_time)
         sleep_time = min(4, sleep_time * 2)
 
+def run_async(fun):
+    threading.Thread(target=fun, args=()).start()
+
+scope = "user-follow-read," \
+        "user-library-read," \
+        "user-library-modify," \
+        "user-modify-playback-state," \
+        "user-read-playback-state," \
+        "user-read-currently-playing," \
+        "app-remote-control," \
+        "playlist-read-private," \
+        "playlist-read-collaborative," \
+        "playlist-modify-public," \
+        "playlist-modify-private," \
+        "streaming"
+
+print("Creating database...")
+DATASTORE = datastore.Datastore()
+
+print("Opening spotipy...")
+sp = spotipy.Spotify(auth_manager=SpotifyOAuth(scope=scope))
+
+pageSize = 50
+has_internet = False
+
 sleep_time = 0.3
 thread = threading.Thread(target=bg_loop, args=())
 thread.daemon = True                            # Daemonize thread
 thread.start()
-
-def run_async(fun):
-    threading.Thread(target=fun, args=()).start()
