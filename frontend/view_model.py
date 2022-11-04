@@ -506,7 +506,7 @@ class PlaceHolderPage(MenuPage):
 
 class RootPage(MenuPage):
     def __init__(self, previous_page):
-        super().__init__("sPot", previous_page, has_sub_page=True)
+        super().__init__("Musikbox Felix", previous_page, has_sub_page=True)
         self.pages = [
             ArtistsPage(self),
             AlbumsPage(self),
