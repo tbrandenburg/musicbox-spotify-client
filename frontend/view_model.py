@@ -357,11 +357,11 @@ class SearchResultsPage(MenuPage):
 
     def page_at(self, index):
         if self.tracks > 0 and index == 0:
-            return PlaceHolderPage("TRACKS", self, has_sub_page=False, is_title=True)
+            return PlaceHolderPage("Lieder", self, has_sub_page=False, is_title=True)
         elif self.artists > 0 and index == self.header_indices[1]:
-            return PlaceHolderPage("ARTISTS", self, has_sub_page=False, is_title=True)
+            return PlaceHolderPage("Künstler", self, has_sub_page=False, is_title=True)
         elif self.albums > 0 and index == self.header_indices[2]:
-            return PlaceHolderPage("ALBUMS", self, has_sub_page=False, is_title=True)
+            return PlaceHolderPage("Alben", self, has_sub_page=False, is_title=True)
         elif self.tracks > 0 and  index < self.header_indices[1]:
             track = self.results.tracks[index - 1]
             command = NowPlayingCommand(lambda: spotify_manager.play_track(track.uri))
