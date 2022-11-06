@@ -205,7 +205,7 @@ class SearchFrame(tk.Frame):
     def update_search(self, query, active_char, loading):
         self.query_label.configure(text=query)
         self.letter_label.configure(text=active_char)
-        loading_text = "Loading..." if loading else ""
+        loading_text = "Lädt..." if loading else ""
         self.loading_label.configure(text=loading_text)
 
 class NowPlayingFrame(tk.Frame): 
