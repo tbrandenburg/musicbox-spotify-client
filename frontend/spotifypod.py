@@ -400,7 +400,7 @@ def processInput(input):
         onPrevPressed()
     #elif button == BTN_ESC:
         #onEscPressed()
-    else
+    else:
         pass
 
 def onKeyPress(event):
