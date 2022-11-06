@@ -17,7 +17,7 @@ LINE_TITLE = 2
 print("Refreshing devices...")
 spotify_manager.refresh_devices()
 print("Refreshing data...")
-#spotify_manager.refresh_data()
+spotify_manager.refresh_data()
 
 class LineItem():
     def __init__(self, title = "", line_type = LINE_NORMAL, show_arrow = False):
