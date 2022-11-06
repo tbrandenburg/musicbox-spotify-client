@@ -113,7 +113,7 @@ class SearchRendering(Rendering):
 
 class SearchPage():
     def __init__(self, previous_page):
-        self.header = "Search"
+        self.header = "Suche"
         self.has_sub_page = True
         self.previous_page = previous_page
         self.live_render = SearchRendering("", 0)
@@ -333,14 +333,14 @@ class AlbumsPage(PlaylistsPage):
         super().__init__(previous_page)
 
     def get_title(self):
-        return "Albums"
+        return "Alben"
 
     def get_content(self):
         return spotify_manager.DATASTORE.getAllSavedAlbums()
 
 class SearchResultsPage(MenuPage):
     def __init__(self, previous_page, results):
-        super().__init__("Search Results", previous_page, has_sub_page=True)
+        super().__init__("Resultate", previous_page, has_sub_page=True)
         self.results = results
         tracks, albums, artists = len(results.tracks), len(results.albums), len(results.artists)
         # Add 1 to each count (if > 0) to make room for section header line items 
@@ -390,14 +390,14 @@ class NewReleasesPage(PlaylistsPage):
         super().__init__(previous_page)
 
     def get_title(self):
-        return "New Releases"
+        return "Neuerscheinungen"
 
     def get_content(self):
         return spotify_manager.DATASTORE.getAllNewReleases()
 
 class ArtistsPage(MenuPage):
     def __init__(self, previous_page):
-        super().__init__("Artists", previous_page, has_sub_page=True)
+        super().__init__("Künstler", previous_page, has_sub_page=True)
 
     def total_size(self):
         return spotify_manager.DATASTORE.getArtistCount()
@@ -515,7 +515,7 @@ class RootPage(MenuPage):
             PlaylistsPage(self),
             ShowsPage(self),
             SearchPage(self),
-            NowPlayingPage(self, "Now Playing", NowPlayingCommand())
+            NowPlayingPage(self, "Läuft gerade", NowPlayingCommand())
         ]
         self.index = 0
         self.page_start = 0
