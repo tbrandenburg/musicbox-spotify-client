@@ -398,8 +398,10 @@ def processInput(input):
         onBackPressed()
     elif button == BTN_PREV:
         onPrevPressed()
-    elif button == BTN_ESC:
-        onEscPressed()
+    #elif button == BTN_ESC:
+        #onEscPressed()
+    else
+        pass
 
 def onKeyPress(event):
     c = event.keycode
