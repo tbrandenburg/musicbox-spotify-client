@@ -152,19 +152,19 @@ class Datastore():
         return pickle.loads(pickled_device)
 
     def getAllSavedDevices(self):
-        return list(map(lambda idx: self._getSavedItem(idx), self.r.keys("device:*")))
+        return list(map(lambda idx: self._getSavedItem(idx), self.r.keys("device:*"))).sort()
 
     def getAllSavedPlaylists(self):
-        return list(map(lambda idx: self._getSavedItem(idx), self.r.keys("playlist-uri:*")))
+        return list(map(lambda idx: self._getSavedItem(idx), self.r.keys("playlist-uri:*"))).sort()
 
     def getAllSavedAlbums(self):
-        return list(map(lambda idx: self._getSavedItem(idx), self.r.keys("album-uri:*")))
+        return list(map(lambda idx: self._getSavedItem(idx), self.r.keys("album-uri:*"))).sort()
 
     def getAllNewReleases(self):
-        return list(map(lambda idx: self._getSavedItem(idx), self.r.keys("nr-uri:*")))
+        return list(map(lambda idx: self._getSavedItem(idx), self.r.keys("nr-uri:*"))).sort()
 
     def getAllSavedShows(self):
-        return list(map(lambda idx: self._getSavedItem(idx), self.r.keys("show-uri:*")))
+        return list(map(lambda idx: self._getSavedItem(idx), self.r.keys("show-uri:*"))).sort()
 
     def clearDevices(self):
         devices = self.r.keys("device:*")
