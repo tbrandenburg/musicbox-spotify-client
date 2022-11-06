@@ -511,7 +511,7 @@ class RootPage(MenuPage):
         self.pages = [
             ArtistsPage(self),
             AlbumsPage(self),
-            NewReleasesPage(self),
+            #NewReleasesPage(self),
             PlaylistsPage(self),
             ShowsPage(self),
             SearchPage(self),
