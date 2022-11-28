@@ -89,8 +89,8 @@ def check_internet(request):
     try:
         result = request()
         has_internet = True
-    except Exception as _:
-        print("No connection!")
+    except Exception as e:
+        print("No connection: " + str(e))
         result = None
         has_internet = False
     return result
