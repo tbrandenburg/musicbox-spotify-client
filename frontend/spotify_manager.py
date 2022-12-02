@@ -472,6 +472,9 @@ print("Opening spotipy...")
 
 sp_oauth=SpotifyOAuth(scope=scope)
 print(" OAuth URL: " + str(sp_oauth.get_authorize_url()))
+sp_token_info = sp_oauth.get_access_token()
+print(" Access token: " + str(sp_oauth.get_access_token()))
+print(" Access token expired?: " + str(sp_oauth.is_token_expired(sp_token_info)))
 
 sp = spotipy.Spotify(auth_manager=sp_oauth)
 
