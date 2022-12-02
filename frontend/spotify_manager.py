@@ -470,7 +470,7 @@ DATASTORE = datastore.Datastore()
 
 print("Opening spotipy...")
 
-sp_oauth=SpotifyOAuth(scope=scope)
+sp_oauth=SpotifyOAuth(scope=scope, open_browser=False)
 print(" OAuth URL: " + str(sp_oauth.get_authorize_url()))
 sp_token_info = sp_oauth.get_access_token()
 print(" Access token: " + str(sp_oauth.get_access_token()))
