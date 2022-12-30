@@ -82,9 +82,15 @@ class tkinterApp(tk.Tk):
         if (platform == 'darwin'):
             self.geometry("320x240")
             SCALE = 0.3
+            print("  Platform: " + platform)
+            print("  Scale: " + str(SCALE))
         else:
             self.attributes('-fullscreen', True)
             SCALE = self.winfo_screenheight() / 930
+            print("  Platform: " + platform)
+            print("  Scale: " + str(SCALE))
+            
+        print ("  Error:" + 1 )
 
         LARGEFONT =("ChicagoFLF", int(72 * SCALE))
         MED_FONT =("ChicagoFLF", int(52 * SCALE))
