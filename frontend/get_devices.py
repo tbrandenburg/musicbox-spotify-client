@@ -44,6 +44,7 @@ while device_fail:
     devices = sp.devices()
     for _, item in enumerate(devices['devices']):
         print("    Found device: " + item['name'])
+    device_fail = False
   except Exception as e:
     print(e)
     device_fail = True
