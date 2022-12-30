@@ -83,8 +83,8 @@ class tkinterApp(tk.Tk):
             self.geometry("320x240")
             SCALE = 0.3
         else:
-            #self.attributes('-fullscreen', True)
-            self.geometry("480x320")
+            self.attributes('-fullscreen', True)
+            self.geometry(str(self.winfo_screenwidth())+"x"+str(self.winfo_screenheight()))
             SCALE = self.winfo_screenheight() / 930
 
         LARGEFONT =("ChicagoFLF", int(72 * SCALE))
