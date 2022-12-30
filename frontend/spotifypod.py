@@ -294,7 +294,9 @@ class NowPlayingFrame(tk.Frame):
    
 class StartPage(tk.Frame): 
     def __init__(self, parent, controller):  
-        tk.Frame.__init__(self, parent) 
+        tk.Frame.__init__(self, parent)
+        print("  Screen width: " + self.winfo_vrootwidth())
+        print("  Screen height: " + self.winfo_vrootheight())
         self.green_arrow_image = ImageTk.PhotoImage(flattenAlpha(Image.open('pod_arrow_grn.png')))
         self.black_arrow_image = ImageTk.PhotoImage(flattenAlpha(Image.open('pod_arrow_blk.png')))
         self.empty_arrow_image = ImageTk.PhotoImage(flattenAlpha(Image.open('pod_arrow_empty.png')))
