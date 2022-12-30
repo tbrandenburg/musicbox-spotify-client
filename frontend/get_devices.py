@@ -15,6 +15,7 @@ scope = "user-follow-read," \
         "streaming"
         
 token_expired = True
+sp_oauth = None
 
 print("  Refreshing token...")
 
@@ -33,4 +34,16 @@ while token_expired:
 
 print("  Token refreshed!")
 
+print("  Getting devices...")
 
+device_fail = True
+
+while device_fail:
+  try:
+    sp = spotipy.Spotify(auth_manager=sp_oauth)
+    devices = sp.devices()
+    for _, item in enumerate(devices['devices']):
+        print("    Found device: " + item['name'])
+  except Exception as e:
+    print(e)
+    device_fail = True
